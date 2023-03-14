@@ -1,2 +1,2 @@
 # Lighting-Edit
-Works in probably eveyr game
+Works in probably every game in roblox
