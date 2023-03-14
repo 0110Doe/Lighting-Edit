@@ -1,0 +1,331 @@
+--[[
+Commands:
+"/end" Ends script
+"/revert" Reverts it back to game's lighting
+"/convert" --Reverts it back to script's custom lighting
+]]
+
+
+--Settings--
+FogEnabled = false
+AtmosphereEnabled = true
+SkyEnabled = true
+SunRaysEffectEnabled = false
+ColorCorrectionEffectEnabled = false
+BloomEffectEnabled = false
+BlurEffectEnabled = false
+SaveOldLighting = true
+DestroyAllInstancesOnEnd = false
+ReplaceAllInstancesOnEnd = true
+RemoveAllInstancesOnExecute = false
+
+--General Lighting
+Ambient = Color3.fromRGB(138, 138, 138)
+Brightness = 2
+ColorShift_Bottom = Color3.fromRGB(0,0,0)
+ColorShift_Top = Color3.fromRGB(0,0,0)
+EnvironmentDiffuseScale = 0
+EnvironmentSpecularScale = 0
+GlobalShadows = true
+OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+ShadowSoftness = 0.2
+ClockTime = 12
+GeographicLatitude = 41.733
+TimeOfDay = "12:00:00"
+ExposureCompensation = 0
+
+--If FogEnabled = true (Does not go into effect if Atmosphere and Sky is true)
+FogEnd = 100000
+FogColor = Color3.fromRGB(192, 192, 192)
+FogStart = 0
+
+--If AtmosphereEnabled = true (Goes to effect if Sky is true)
+AtmoDensity = 0.395
+AtmoOffset = 0
+AtmoColor = Color3.fromRGB(199, 170, 107)
+AtmoDecay = Color3.fromRGB(92, 60, 13)
+AtmoGlare = 0
+AtmoHaze = 0
+
+--If SkyEnabled = true
+SkyCelestialBodiesShown = true
+SkyMoonAngularSize = 11
+SkyMoonTextureId = "rbxasset://sky/moon.jpg"
+SkyBoxBk = "rbxasset://textures/sky/sky512_bk.tex"
+SkyBoxDn = "rbxasset://textures/sky/sky512_dn.tex"
+SkyBoxFt = "rbxasset://textures/sky/sky512_ft.tex"
+SkyBoxLf = "rbxasset://textures/sky/sky512_lf.tex"
+SkyBoxRt = "rbxasset://textures/sky/sky512_rt.tex"
+SkyBoxUp = "rbxasset://textures/sky/sky512_up.tex"
+SkyStarCount = 3000
+SkySunAngularSize = 21
+SkySunTextureId = "rbxasset://sky/sun.jpg"
+
+--If SunRaysEffectEnabled = true
+SunRaysIntensity = 0.25
+SunRaysSpread =  1
+
+--If ColorCorrectionEffectEnabled = true
+ColorCorrectionBrightness = 0
+ColorCorrectionContrast = 0
+ColorCorrectionStaturation = 0
+ColorCorrectionTintColor = Color3.fromRGB(255,255,255)
+
+--If BloomEffectEnabled = true
+BloomIntensity = 1
+BloomSize = 24
+BloomThreshold = 2
+
+--If BlurEffectEnabled = true
+BlurSize = 24
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Main Script (DO NOT EDIT  BELOW)
+function Notification(Title,Text,Duration,Button1,Image)
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+		Title = Title;
+		Text = Text;
+		Duration = Duration;
+		Button1 = Button1;
+		Icon = Image;
+	})
+end
+Notification("Loading..","Please wait,",5,nil,"rbxassetid://11589326685")
+
+Lighting = game.Lighting
+
+CustomLightingFolder = Instance.new("Folder", game)
+CustomLightingFolder.Name = "CustomLightingFolder"
+OldLightingFolder = Instance.new("Folder", game)
+OldLightingFolder.Name = "OldLightingFolder"
+if SaveOldLighting == true then
+	local LightingC = Lighting:GetChildren()
+	for _, item in pairs(LightingC) do
+		item:Clone().Parent = OldLightingFolder
+	end
+
+	OldLightingConfigs ={
+		OldAmbient = Lighting.Ambient,
+		OldBrightness = Lighting.Brightness,
+		OldColorShift_Bottom = Lighting.ColorShift_Bottom,
+		OldColorShift_Top = Lighting.ColorShift_Top,
+		OldEnvironmentDiffuseScale = Lighting.EnvironmentDiffuseScale,
+		OldEnvironmentSpecularScale = Lighting.EnvironmentSpecularScale,
+		OldGlobalShadows = Lighting.GlobalShadows,
+		OldOutdoorAmbient = Lighting.OutdoorAmbient,
+		OldShadowSoftness = Lighting.ShadowSoftness,
+		OldClockTime = Lighting.ClockTime,
+		OldGeographicLatitude = Lighting.GeographicLatitude,
+		OldTimeOfDay = Lighting.TimeOfDay,
+		OldExposureCompensation = Lighting.ExposureCompensation
+	}
+end
+
+if RemoveAllInstancesOnExecute == true then
+	local LightingC = Lighting:GetChildren()
+	for _, item in pairs(LightingC) do
+		item:Remove()
+	end
+end
+
+--Lighting
+Lighting.Ambient = Ambient
+Lighting.Brightness  = Brightness
+Lighting.ColorShift_Bottom = ColorShift_Bottom
+Lighting.ColorShift_Top = ColorShift_Top
+Lighting.EnvironmentDiffuseScale = EnvironmentDiffuseScale
+Lighting.EnvironmentSpecularScale = EnvironmentSpecularScale
+Lighting.GlobalShadows = GlobalShadows
+Lighting.OutdoorAmbient = OutdoorAmbient
+Lighting.ShadowSoftness = ShadowSoftness
+Lighting.ClockTime = ClockTime
+Lighting.GeographicLatitude = GeographicLatitude
+Lighting.TimeOfDay = TimeOfDay
+Lighting.ExposureCompensation = ExposureCompensation
+
+
+--If then's
+if FogEnd == true then
+	Lighting.FogEnd = FogEnd
+	Lighting.FogColor = FogColor
+	Lighting.FogStart = FogStart
+end
+
+if AtmosphereEnabled == true then
+	local Main = Instance.new("Atmosphere", Lighting)
+	Main.Density = AtmoDensity
+	Main.Offset = AtmoOffset
+	Main.Color = AtmoColor
+	Main.Decay = AtmoDecay
+	Main.Glare = AtmoGlare
+	Main.Haze = AtmoHaze
+end
+
+if SkyEnabled == true then
+	local Main = Instance.new("Sky", Lighting)
+	Main.CelestialBodiesShown = SkyCelestialBodiesShown
+	Main.MoonAngularSize = SkyMoonAngularSize
+	Main.MoonTextureId = SkyMoonTextureId
+	Main.SkyboxBk = SkyBoxBk
+	Main.SkyboxDn = SkyBoxDn
+	Main.SkyboxFt = SkyBoxFt
+	Main.SkyboxLf = SkyBoxLf
+	Main.SkyboxRt = SkyBoxRt
+	Main.SkyboxUp = SkyBoxUp
+	Main.StarCount = SkyStarCount
+	Main.SunAngularSize = SkySunAngularSize
+	Main.SunTextureId = SkySunTextureId
+end
+
+if SunRaysEffectEnabled == true then
+	local Main = Instance.new("SunRaysEffect", Lighting)
+	Main.Intensity = SunRaysIntensity
+	Main.Spread = SunRaysSpread
+end
+
+if ColorCorrectionEffectEnabled == true then
+	local Main = Instance.new("ColorCorrectionEffect", Lighting)
+	Main.Brightness = ColorCorrectionBrightness
+	Main.Contrast = ColorCorrectionContrast
+	Main.Saturation = ColorCorrectionStaturation
+	Main.TintColor = ColorCorrectionTintColor
+end
+
+if BloomEffectEnabled == true then
+	local Main = Instance.new("BloomEffect", Lighting)
+	Main.Intensity = BloomIntensity
+	Main.Size = BloomSize
+	Main.Threshold = BloomThreshold
+end
+
+if BlurEffectEnabled == true then
+	local Main = Instance.new("BlurEffect", Lighting)
+	Main.Size = BlurSize
+end
+
+Player = game.Players.LocalPlayer
+
+Reverted = false
+Player.Chatted:Connect(function(msg)
+	if msg == "/end" then
+		if DestroyAllInstancesOnEnd == true then
+			local LightingC = Lighting:GetChildren()
+			for _, item in pairs(LightingC) do
+				item:Remove()
+			end
+		end
+
+		if ReplaceAllInstancesOnEnd == true then
+			pcall(function()
+				local LightingC = Lighting:GetChildren()
+				for _, item in pairs(LightingC) do
+					item:Remove()
+				end
+				local OldLightingC = OldLightingFolder:GetChildren()
+				for _, item in pairs(OldLightingC) do
+					item.Parent = Lighting
+				end
+
+				Lighting.Ambient = OldLightingConfigs.OldAmbient
+				Lighting.Brightness  = OldLightingConfigs.OldBrightness
+				Lighting.ColorShift_Bottom = OldLightingConfigs.OldColorShift_Bottom
+				Lighting.ColorShift_Top = OldLightingConfigs.OldColorShift_Top
+				Lighting.EnvironmentDiffuseScale = OldLightingConfigs.OldEnvironmentDiffuseScale
+				Lighting.EnvironmentSpecularScale = OldLightingConfigs.OldEnvironmentSpecularScale
+				Lighting.GlobalShadows = OldLightingConfigs.OldGlobalShadows
+				Lighting.OutdoorAmbient = OldLightingConfigs.OldOutdoorAmbient
+				Lighting.ShadowSoftness = OldLightingConfigs.OldShadowSoftness
+				Lighting.ClockTime = OldLightingConfigs.OldClockTime
+				Lighting.GeographicLatitude = OldLightingConfigs.OldGeographicLatitude
+				Lighting.TimeOfDay = OldLightingConfigs.OldTimeOfDay
+				Lighting.ExposureCompensation = OldLightingConfigs.OldExposureCompensation
+			end)
+		end
+	end
+
+	if msg == "/revert" then
+		pcall(function()
+			if Reverted == false then
+				local LightingC = Lighting:GetChildren()
+				for _, item in pairs(LightingC) do
+					item.Parent = CustomLightingFolder
+				end
+
+				local OldC = OldLightingFolder:GetChildren()
+				for _, item in pairs(OldC) do
+					item.Parent = Lighting
+				end
+
+				Lighting.Ambient = OldLightingConfigs.OldAmbient
+				Lighting.Brightness  = OldLightingConfigs.OldBrightness
+				Lighting.ColorShift_Bottom = OldLightingConfigs.OldColorShift_Bottom
+				Lighting.ColorShift_Top = OldLightingConfigs.OldColorShift_Top
+				Lighting.EnvironmentDiffuseScale = OldLightingConfigs.OldEnvironmentDiffuseScale
+				Lighting.EnvironmentSpecularScale = OldLightingConfigs.OldEnvironmentSpecularScale
+				Lighting.GlobalShadows = OldLightingConfigs.OldGlobalShadows
+				Lighting.OutdoorAmbient = OldLightingConfigs.OldOutdoorAmbient
+				Lighting.ShadowSoftness = OldLightingConfigs.OldShadowSoftness
+				Lighting.ClockTime = OldLightingConfigs.OldClockTime
+				Lighting.GeographicLatitude = OldLightingConfigs.OldGeographicLatitude
+				Lighting.TimeOfDay = OldLightingConfigs.OldTimeOfDay
+				Lighting.ExposureCompensation = OldLightingConfigs.OldExposureCompensation
+
+				Reverted = true
+			else
+				Notification("Error!","Its already reverted back to game's lighting!",10,nil,nil)
+				warn("Error!, Its already reverted back to game's lighting!")
+			end
+		end)
+	end
+
+	if msg == "/convert" then
+		pcall(function()
+			if Reverted == true then
+				local LightingC = Lighting:GetChildren()
+				for _, item in pairs(LightingC) do
+					item.Parent = OldLightingFolder
+				end
+
+				local CustomC = CustomLightingFolder:GetChildren()
+				for _, item in pairs(CustomC) do
+					item.Parent = Lighting
+				end
+
+				Lighting.Ambient = Ambient
+				Lighting.Brightness  = Brightness
+				Lighting.ColorShift_Bottom = ColorShift_Bottom
+				Lighting.ColorShift_Top = ColorShift_Top
+				Lighting.EnvironmentDiffuseScale = EnvironmentDiffuseScale
+				Lighting.EnvironmentSpecularScale = EnvironmentSpecularScale
+				Lighting.GlobalShadows = GlobalShadows
+				Lighting.OutdoorAmbient = OutdoorAmbient
+				Lighting.ShadowSoftness = ShadowSoftness
+				Lighting.ClockTime = ClockTime
+				Lighting.GeographicLatitude = GeographicLatitude
+				Lighting.TimeOfDay = TimeOfDay
+				Lighting.ExposureCompensation = ExposureCompensation
+
+				Reverted = false
+			else
+				Notification("Error!","Its already reverted back to script's custom lighting!",10,nil,nil)
+				warn("Error!, Its already reverted back to script's custom lighting!")
+			end
+		end)
+	end
+end)
